@@ -85,20 +85,25 @@ if (event.isOwnedByMe()) {
   event.setDescription(description);
 
 
-  // Adds attendees as editors of the new sheet
-  const editors = event.getGuestList().filter(guest => guest.getEmail() !== "").map(guest => guest.getEmail());
-  Drive.Permissions.insert({
-     role: 'writer',
-     type: 'user',
-     value: editors 
-     }, 
-     
-     newSheetId, 
-     { 
-       'sendNotificationEmails': 'true',
-       'emailMessage': "Hi everyone, Attached here is the agenda for this week's meeting. Please take a few minutes between now and then to note some projects and tasks which you worked on last week and some that you are tackling this week." });
-  }
-}
+// Adds event invitees as editors of the new sheet
+        const editors = event.getGuestList().filter(guest => guest.getEmail() !== "").map(guest => guest.getEmail());
+        editors.forEach(editor =>{
+          Drive.Permissions.insert({
+            role: 'writer',
+            type: 'user',
+            value: editor
+            },
+            
+            newSheetId, 
+            {
+              sendNotificationEmails: 'true',
+              emailMessage: "Hi everyone, Attached here is the agenda for this week's meeting. Please take a few minutes between now and then to note some high-level projects and tasks which you worked on last week and some that you are tackling this week."
+            }
+          )}
+        )
+      }
+  
+    }
     return;
   }
 }
